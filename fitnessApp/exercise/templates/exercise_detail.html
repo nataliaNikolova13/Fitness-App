@@ -1,0 +1,48 @@
+<!-- exercise_detail.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ exercise.title }}</title>
+    <style>
+        
+        .exercise-image {
+            width: 300px;  /* Adjust the width as needed */
+            height: auto;  /* Maintain aspect ratio */
+        }
+
+        .exercise-description {
+            max-width: 600px;  /* Adjust the maximum width as needed */
+            overflow-wrap: break-word; /* Allow words to break */
+            word-wrap: break-word; /* Non-standard property for older browsers */
+            word-break: break-word; /* Handle non-breaking characters */
+        }
+       
+    </style>
+</head>
+<body>
+    <div class="center-container">
+    <h1>Name: {{ exercise.name}}</h1>
+
+    {% if exercise.image_url %}
+        <p>Image:</p>
+        <img class="exercise-image" src="{{ exercise.image_url }}" alt="{{ exercise.name }}">
+    {% endif %}
+
+    <p class="exercise-description">Description: {{ exercise.description }}</p>
+
+    <p>Duration: {{exercise.duration}} seconds</p>
+
+    <p>Difficulty: {{ exercise.get_difficulty_display }}</p>
+
+    {% if exercise.tags.all %}
+        <p>Tags:</p>
+        <ul>
+            {% for tag in exercise.tags.all %}
+                <li>{{ tag.name }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+</body>
+</html>
