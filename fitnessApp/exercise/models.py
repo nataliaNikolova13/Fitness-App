@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from django.contrib.auth.models import User
 
 DIFFICULTY = [
     (0, 'EASY'),
@@ -31,4 +32,17 @@ class Exercise(models.Model):
 
     def __str__(self):
         return self.name
+    
+    
 
+class UserTagCount(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    tag = models.CharField(max_length=50)  
+    count = models.PositiveIntegerField(default=0)
+
+    def increment_count(self):
+        self.count += 1
+        self.save()
+
+    def __str__(self):
+        return f"{self.user.username} - {self.tag}: {self.count}"
