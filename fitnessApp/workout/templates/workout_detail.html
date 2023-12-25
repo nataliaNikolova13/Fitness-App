@@ -14,7 +14,8 @@
     <p>Exercises:</p>
     <ul>
         {% for exercise in workout.exercises.all %}
-            <li>{{ exercise.name }}</li>
+            <!-- Add a hyperlink for each exercise name -->
+            <li><a href="{% url 'exercise_detail' exercise.id %}">{{ exercise.name }}</a></li>
         {% endfor %}
     </ul>
     {% if not workout.completed %}
