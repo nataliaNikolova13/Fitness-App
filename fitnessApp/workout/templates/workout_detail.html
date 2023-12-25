@@ -1,0 +1,30 @@
+<!-- workout_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ workout.name }} Detail</title>
+</head>
+<body>
+    <h1>{{ workout.name }} Detail</h1>
+    <p>Category: {{ workout.get_category_display }}</p>
+    <!-- Add more details as needed -->
+    <p>Exercises:</p>
+    <ul>
+        {% for exercise in workout.exercises.all %}
+            <li>{{ exercise.name }}</li>
+        {% endfor %}
+    </ul>
+    {% if not workout.completed %}
+        <form method="post" action="{% url 'workouts:mark_workout_completed' workout.id %}">
+            {% csrf_token %}
+            <button type="submit">Mark as Completed</button>
+        </form>
+    {% else %}
+        <p>This workout is completed.</p>
+    {% endif %}
+    
+</body>
+</html>

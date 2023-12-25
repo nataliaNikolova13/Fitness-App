@@ -1,40 +1,28 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from exercise.models import Exercise
 from django.http import HttpResponse
 from user.models import UserProfile
 from django.contrib.auth.models import User
-
-
 from .models import Workout
-import random
-from .utils import create_legs_workout_function
+from django.contrib.auth.decorators import login_required
+from .utils import updateUserInfo
+
 
 # Create your views here.
-
-def create_legs_workout_view(request):
-    # You may need to adjust how you get or create a user instance
-    # depending on your specific requirements
-    # user_profile = UserProfile.objects.get(user=request.user)
-
-    # just for now, don't have users
-
-    # Get the superuser (replace 'admin' with your superuser's username)
-    superuser = User.objects.get(username='nati')
-
-    # Assuming you have a UserProfile associated with the superuser
-    try:
-        # user_profile = UserProfile.objects.get(user=superuser)
-        user_profile, created = UserProfile.objects.get_or_create(user=superuser)
-    except UserProfile.DoesNotExist:
-        # Create UserProfile if it doesn't exist
-        # user_profile = UserProfile.objects.create(user=superuser)
-        user_profile, created = UserProfile.objects.get_or_create(user=superuser)
+@login_required
+def user_workouts(request):
+    workouts = Workout.objects.filter(user=request.user.userprofile)
+    return render(request, 'user_workouts.html', {'workouts': workouts})
 
 
-    # Call the function to create a leg workout
-    leg_workout = create_legs_workout_function(user_profile)
+def workout_detail(request, workout_id):
+    workout = get_object_or_404(Workout, pk=workout_id)
+    return render(request, 'workout_detail.html', {'workout': workout})
 
-    if leg_workout:
-        return HttpResponse(f"Leg workout created for {user_profile.user.username}.")
-    else:
-        return HttpResponse("Failed to create leg workout. Not enough leg exercises.")
+
+def mark_workout_completed(request, workout_id):
+    workout = get_object_or_404(Workout, pk=workout_id)
+    workout.completed = True
+    workout.save()
+    updateUserInfo(workout_id)
+    return redirect('workouts:workout_detail', workout_id=workout.id)
