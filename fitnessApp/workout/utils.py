@@ -3,12 +3,25 @@ from .models import Exercise, Workout  # Adjust this import based on your app's 
 from user.models import ProblemArea
 from random import sample
 from django.db.models import Q
+from exercise.models import UserTagCount
 
 import random
 
 
-def updateUserInfo(workout_id):
-    pass
+def updateUserInfo(workout):
+    for exercise in workout.exercises.all():
+        exercise_tags = exercise.tags.all()
+
+        for tag in exercise_tags:
+            user_tag_count, created = UserTagCount.objects.get_or_create(
+                user=workout.user.user,
+                tag=tag.name  # Replace with the actual field name of the tag
+            )
+            user_tag_count.increment_count()
+
+    user = workout.user
+    user.points += workout.exercises.count()
+    user.save()        
 
 #ARMS'),(3, 'CORE'),(4, 'CARDIO
 

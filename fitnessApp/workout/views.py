@@ -24,5 +24,5 @@ def mark_workout_completed(request, workout_id):
     workout = get_object_or_404(Workout, pk=workout_id)
     workout.completed = True
     workout.save()
-    updateUserInfo(workout_id)
+    updateUserInfo(workout)
     return redirect('workouts:workout_detail', workout_id=workout.id)
