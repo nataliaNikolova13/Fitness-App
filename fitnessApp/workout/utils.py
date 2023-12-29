@@ -71,9 +71,10 @@ def getExercises(user_profile, category):
     if exercises.count() < 5:
         return None    
     
+    filtered_exercises = exercises.filter(difficulty__lte=difficulty_points)
     user_problem_area_tags = user_profile.problem_areas.values_list('tag__name', flat=True)
-    excluded_exercises = exercises.filter(tags__name__in=user_problem_area_tags)
-    filtered_exercises = exercises.exclude(Q(id__in=excluded_exercises.values_list('id', flat=True)))
+    excluded_exercises = filtered_exercises.filter(tags__name__in=user_problem_area_tags)
+    filtered_exercises = filtered_exercises.exclude(Q(id__in=excluded_exercises.values_list('id', flat=True)))
 
     if filtered_exercises.count() < 5:
         return None
@@ -147,4 +148,49 @@ def create_cardio_workout_function(user_profile):
 
 
 def create_custom_workout_function(user_profile):
-    pass
+    most_used_tags = UserTagCount.objects.filter(user=user_profile.user).order_by('-count')[:5]
+    custom_exercises = Exercise.objects.filter(tags__name__in=[tag.tag for tag in most_used_tags])
+
+    difficulty_levels = [
+        (0, 'EASY'),
+        (50, 'MEDIUM'),
+        (100, 'HARD'),
+        (200, 'PRO')
+    ]
+
+
+    difficulty_points = None
+    for points, level in difficulty_levels:
+        if user_profile.points >= points:
+            difficulty_points = points
+        else:
+            break
+
+    if difficulty_points is None:
+        return None
+    
+    if custom_exercises.count() < 5:
+        return None    
+    
+    filtered_exercises = custom_exercises.filter(difficulty__lte=difficulty_points)
+    
+    user_problem_area_tags = user_profile.problem_areas.values_list('tag__name', flat=True)
+    excluded_exercises = filtered_exercises.filter(tags__name__in=user_problem_area_tags)
+    filtered_exercises = filtered_exercises.exclude(Q(id__in=excluded_exercises.values_list('id', flat=True)))
+
+    if filtered_exercises.count() < 5:
+        return None
+    
+    selected_exercises = random.sample(list(filtered_exercises), min(10, filtered_exercises.count()))
+
+    new_workout = Workout.objects.create(user=user_profile, name="Custom workout", completed=False, category=0)
+    new_workout.exercises.add(*selected_exercises)
+    
+    try:
+        new_workout.save()
+        
+        print("Workout saved successfully!")
+    except Exception as e:
+        print(f"Error saving workout: {e}")
+
+    return new_workout
