@@ -5,7 +5,7 @@ from user.models import UserProfile
 from django.contrib.auth.models import User
 from .models import Workout
 from django.contrib.auth.decorators import login_required
-from .utils import updateUserInfo
+from .utils import updateUserInfo, create_arms_workout_function
 
 
 # Create your views here.
