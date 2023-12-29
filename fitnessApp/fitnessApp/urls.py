@@ -19,11 +19,12 @@ from django.urls import path, include
 
 from common.views import homePage
 from exercise.views import exercise_list
+from user.views import login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
     path('exercise/', include('exercise.urls')),
-    path('workouts/', include('workout.urls')),
+    path('user/', include('user.urls')),
+    path('workouts/', include('workout.urls'), name='workouts'),
     path('', homePage, name='homePage')
 ]
