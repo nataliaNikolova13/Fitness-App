@@ -149,6 +149,11 @@ def create_cardio_workout_function(user_profile):
 
 def create_custom_workout_function(user_profile):
     most_used_tags = UserTagCount.objects.filter(user=user_profile.user).order_by('-count')[:5]
+
+    if not most_used_tags:
+        most_used_tags = user_profile.goals.values_list('tag__name', flat=True)
+
+
     custom_exercises = Exercise.objects.filter(tags__name__in=[tag.tag for tag in most_used_tags])
 
     difficulty_levels = [
