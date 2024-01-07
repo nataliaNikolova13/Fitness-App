@@ -36,17 +36,25 @@ def updateUserInfo(workout):
         category = 'Cardio'    
     elif categoryNum == 0:
         category = 'Custom'   
+        print(2)
 
-    new_exercises = getExercises(workout.user, category)
+    if category == 'Custom':
+        new_exercises = getExercisesCustom(workout.user)
+        print(new_exercises)
+    else:
+        new_exercises = getExercises(workout.user, category)
+        print(1)
+
+
     if new_exercises is not None:
+        print(3)
         workout.exercises.clear()
         workout.exercises.add(*new_exercises) 
         workout.completed = False
-        workout.save()       
+        workout.save()    
+        print(workout.completed)   
 
   
-
-#ARMS'),(3, 'CORE'),(4, 'CARDIO custom
     
 
 def getExercises(user_profile, category):
@@ -120,7 +128,10 @@ def create_core_workout_function(user_profile):
     abs_exercises = getExercises(user_profile, 'Abs')
 
     new_workout = Workout.objects.create(user=user_profile, name="Abs and core workout", completed=False, category=2)
-    all_exercises = set(core_exercises + abs_exercises)[0:5]
+    all_exercises = set(core_exercises + abs_exercises)
+    set_iterator = iter(all_exercises)
+    all_exercises = set(next(set_iterator) for _ in range(5))
+    
     new_workout.exercises.add(*all_exercises)
     
     try:
@@ -149,14 +160,17 @@ def create_cardio_workout_function(user_profile):
     return new_workout
 
 
-def create_custom_workout_function(user_profile):
-    most_used_tags = UserTagCount.objects.filter(user=user_profile.user).order_by('-count')[:5]
+def getExercisesCustom(user_profile):
+    most_tags = UserTagCount.objects.filter(user=user_profile.user).order_by('-count')[:5]
+    most_used_tags = most_tags.values_list('tag', flat=True)
+    print(most_used_tags)
 
     if not most_used_tags:
         most_used_tags = user_profile.goals.values_list('tag__name', flat=True)
+        print(most_used_tags)
 
 
-    custom_exercises = Exercise.objects.filter(tags__name__in=[tag.tag for tag in most_used_tags])
+    custom_exercises = Exercise.objects.filter(tags__name__in=most_used_tags)
 
     difficulty_levels = [
         (0, 'EASY'),
@@ -174,9 +188,11 @@ def create_custom_workout_function(user_profile):
             break
 
     if difficulty_points is None:
+        print(8)
         return None
     
     if custom_exercises.count() < 5:
+        print(7)
         return None    
     
     filtered_exercises = custom_exercises.filter(difficulty__lte=difficulty_points)
@@ -189,6 +205,12 @@ def create_custom_workout_function(user_profile):
         return None
     
     selected_exercises = random.sample(list(filtered_exercises), min(10, filtered_exercises.count()))
+    print(selected_exercises)
+    return selected_exercises
+
+
+def create_custom_workout_function(user_profile):
+    selected_exercises = getExercisesCustom(user_profile)
 
     new_workout = Workout.objects.create(user=user_profile, name="Custom workout", completed=False, category=0)
     new_workout.exercises.add(*selected_exercises)

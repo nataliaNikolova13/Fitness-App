@@ -40,21 +40,27 @@ def registration_view(request):
 
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
+
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.points = 0
+            profile.save()
             
             goals = profile_form.cleaned_data['goals']
             print(goals)
             for goal in goals:
                 tag = Tag.objects.get(name=goal)
-                Goal.objects.create(user=user, tag=tag)
+                goal_obj = Goal.objects.create(user=user, tag=tag)
+                profile.goals.add(goal_obj)
 
             problem_areas = profile_form.cleaned_data['problem_areas']
             for problem_area in problem_areas:
                 tag = Tag.objects.get(name=problem_area)
                 ProblemArea.objects.create(user=user, tag=tag)
 
-            profile = profile_form.save(commit=False)
-            profile.user = user
-            profile.points = 0
+            # profile = profile_form.save(commit=False)
+            # profile.user = user
+            # profile.points = 0
             profile.save()
 
             create_legs_workout_function(profile)
