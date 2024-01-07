@@ -117,9 +117,11 @@ def create_arms_workout_function(user_profile):
 
 def create_core_workout_function(user_profile):
     core_exercises = getExercises(user_profile, 'Core')
+    abs_exercises = getExercises(user_profile, 'Abs')
 
-    new_workout = Workout.objects.create(user=user_profile, name="Core workout", completed=False, category=2)
-    new_workout.exercises.add(*core_exercises)
+    new_workout = Workout.objects.create(user=user_profile, name="Abs and core workout", completed=False, category=2)
+    all_exercises = set(core_exercises + abs_exercises)[0:5]
+    new_workout.exercises.add(*all_exercises)
     
     try:
         new_workout.save()

@@ -9,7 +9,10 @@ from workout.utils import create_legs_workout_function, create_arms_workout_func
 
 # Create your views here.
 from .models import UserProfile
+from django.contrib.auth.decorators import login_required
+from .decorators import guest_required
 
+@guest_required
 def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -24,11 +27,12 @@ def user_login(request):
 
     return render(request, 'login.html')
 
-
+@login_required(login_url='/user/login/')
 def user_logout(request):
     logout(request)
     return redirect('/')
 
+@guest_required
 def registration_view(request):
     if request.method == 'POST':
         user_form = RegistrationForm(request.POST)
@@ -37,13 +41,13 @@ def registration_view(request):
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
             
-            goals = user_form.cleaned_data['goals']
+            goals = profile_form.cleaned_data['goals']
             print(goals)
             for goal in goals:
                 tag = Tag.objects.get(name=goal)
                 Goal.objects.create(user=user, tag=tag)
 
-            problem_areas = user_form.cleaned_data['problem_areas']
+            problem_areas = profile_form.cleaned_data['problem_areas']
             for problem_area in problem_areas:
                 tag = Tag.objects.get(name=problem_area)
                 ProblemArea.objects.create(user=user, tag=tag)
@@ -59,7 +63,7 @@ def registration_view(request):
             create_core_workout_function(profile)
             create_custom_workout_function(profile)
 
-            return redirect('login.html')  
+            return redirect('/user/login/')  
     else:
         user_form = RegistrationForm()
         profile_form = UserProfileForm()

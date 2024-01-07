@@ -23,7 +23,7 @@ class ProblemArea(models.Model):
 class UserProfile(models.Model):   
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None) 
     bio = models.TextField(blank=True)
-    email = models.EmailField(unique=True) 
+    email = models.EmailField() 
     points = models.PositiveIntegerField(default=0)
     goals = models.ManyToManyField(Goal, related_name='users', blank=True)
     problem_areas = models.ManyToManyField(ProblemArea, related_name='users', blank=True)

@@ -2,6 +2,21 @@
   {% csrf_token %}
   <h2>Register</h2>
   {{ user_form.as_p }}
-  {{ profile_form.as_p }}
-  <button type="submit">Register</button>
+  <h3>Pick preferences</h3>
+  <div class="row" style="display: flex;">
+    <div class="column" style="flex: 1; padding: 10px;">
+      <h4>Goals</h4>
+      {{ profile_form.goals }}
+    </div>
+    <div class="column" style="flex: 1; padding: 10px;">
+      <h4>Problem areas</h4>
+      {{ profile_form.problem_areas }} 
+    </div>
+    <div class="column" style="flex: 1; padding-left: 1500px;"></div>
+  </div>
+  <h4>Bio</h4>
+  {{ profile_form.bio }}
+  <div>
+    <button type="submit">Register</button>
+  </div>
 </form>
