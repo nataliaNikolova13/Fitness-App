@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Detail</title>
+</head>
+<body>
+
+    <h1>User Profile Detail</h1>
+
+    <p><strong>ID:</strong> {{ profile.user.id }}</p>
+    <p><strong>Username:</strong> {{ profile.user.username }}</p>
+    <p><strong>Email:</strong> {{ profile.user.email }}</p>
+    <p><strong>Bio:</strong> {{ profile.bio }}</p>
+    <p><strong>Points:</strong> {{ profile.points }}</p>
+    <p><strong>Goals:</strong> 
+        {% if profile.goals.all %}
+            {% for goal in profile.goals.all %}
+                {{ goal.tag.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        {% else %}
+            No goals.
+        {% endif %}
+    </p>
+    <p><strong>Problem Areas:</strong> 
+        {% if profile.problem_areas.all %}
+            {% for problem_area in profile.problem_areas.all %}
+                {{ problem_area.tag.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        {% else %}
+            No problem areas.
+        {% endif %}
+    </p>
+    <p>
+        <a href="{% url 'profile_edit' profile.id %}">Edit Profile</a>
+    </p>
+
+</body>
+</html>

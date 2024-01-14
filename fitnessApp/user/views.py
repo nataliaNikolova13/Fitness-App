@@ -1,16 +1,26 @@
 # from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .models import UserProfile, Goal, ProblemArea
-from .forms import RegistrationForm, UserCreationForm, UserProfileForm
+from .forms import RegistrationForm, UserCreationForm, UserProfileForm, UserProfileEditForm
 from exercise.models import Tag
 from workout.utils import create_legs_workout_function, create_arms_workout_function, create_cardio_workout_function, create_core_workout_function, create_custom_workout_function
 
 # Create your views here.
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
-from .decorators import guest_required
+from .decorators import guest_required, superuser_required, user_owner_required, user_owner_or_superuser_required
+
+@superuser_required
+def user_list(request):
+    profiles = UserProfile.objects.all()
+    return render(request, 'users.html', {'profiles':profiles})
+
+@user_owner_or_superuser_required
+def user_detail(request, profile_id):
+    profile = get_object_or_404(UserProfile, id=profile_id)
+    return render(request, 'profile_detail.html', {'profile':profile})
 
 @guest_required
 def user_login(request):
@@ -58,9 +68,6 @@ def registration_view(request):
                 tag = Tag.objects.get(name=problem_area)
                 ProblemArea.objects.create(user=user, tag=tag)
 
-            # profile = profile_form.save(commit=False)
-            # profile.user = user
-            # profile.points = 0
             profile.save()
 
             create_legs_workout_function(profile)
@@ -75,3 +82,22 @@ def registration_view(request):
         profile_form = UserProfileForm()
 
     return render(request, 'register.html', {'user_form': user_form, 'profile_form': profile_form})
+
+
+def profile_edit(request, profile_id):
+    profile = get_object_or_404(UserProfile, id=profile_id)
+
+    if request.method == 'POST':
+        form = UserProfileEditForm(request.POST, instance=profile)
+        if form.is_valid():
+            # Override cleaned_data for tags
+            form.cleaned_data['goals'] = [tag.id for tag in form.cleaned_data['goals']]
+            form.cleaned_data['problem_areas'] = [tag.id for tag in form.cleaned_data['problem_areas']]
+
+            form.save()
+            return redirect('user_detail', profile_id=profile.id)
+
+    else:
+        form = UserProfileEditForm(instance=profile)
+
+    return render(request, 'profile_edit.html', {'profile': profile, 'form': form})

@@ -3,7 +3,8 @@ from .models import Exercise, Workout  # Adjust this import based on your app's 
 from user.models import ProblemArea
 from random import sample
 from django.db.models import Q
-from exercise.models import UserTagCount
+from exercise.models import UserTagCount, Tag
+
 
 import random
 
@@ -36,23 +37,23 @@ def updateUserInfo(workout):
         category = 'Cardio'    
     elif categoryNum == 0:
         category = 'Custom'   
-        print(2)
+        # print(2)
 
     if category == 'Custom':
         new_exercises = getExercisesCustom(workout.user)
-        print(new_exercises)
+        # print(new_exercises)
     else:
         new_exercises = getExercises(workout.user, category)
-        print(1)
+        # print(1)
 
 
     if new_exercises is not None:
-        print(3)
+        # print(3)
         workout.exercises.clear()
         workout.exercises.add(*new_exercises) 
         workout.completed = False
         workout.save()    
-        print(workout.completed)   
+        # print(workout.completed)   
 
   
     
@@ -168,6 +169,8 @@ def getExercisesCustom(user_profile):
     if not most_used_tags:
         most_used_tags = user_profile.goals.values_list('tag__name', flat=True)
         print(most_used_tags)
+        if not most_used_tags:
+            most_used_tags = Tag.objects.values_list('name', flat=True)
 
 
     custom_exercises = Exercise.objects.filter(tags__name__in=most_used_tags)
@@ -188,11 +191,10 @@ def getExercisesCustom(user_profile):
             break
 
     if difficulty_points is None:
-        print(8)
         return None
     
     if custom_exercises.count() < 5:
-        print(7)
+        # custom_exercises = random.sample(list(Exercise.objects.all()), min(5, Exercise.objects.all().count()))
         return None    
     
     filtered_exercises = custom_exercises.filter(difficulty__lte=difficulty_points)
@@ -205,7 +207,7 @@ def getExercisesCustom(user_profile):
         return None
     
     selected_exercises = random.sample(list(filtered_exercises), min(10, filtered_exercises.count()))
-    print(selected_exercises)
+    # print(selected_exercises)
     return selected_exercises
 
 

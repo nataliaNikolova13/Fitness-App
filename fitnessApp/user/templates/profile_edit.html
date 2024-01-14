@@ -1,0 +1,36 @@
+<!-- profile_edit.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User Profile</title>
+</head>
+<body>
+
+    <h1>Edit Profile</h1>
+<form method="post" action="{% url 'profile_edit' profile.id %}">
+    {% csrf_token %}
+    <!-- {{ form.as_p }} -->
+    <h3>Edit preferences</h3>
+    <div class="row" style="display: flex;">
+      <div class="column" style="flex: 1; padding: 10px;">
+        <h4>Goals</h4>
+        {{ form.goals }}
+      </div>
+      <div class="column" style="flex: 1; padding: 10px;">
+        <h4>Problem areas</h4>
+        {{ form.problem_areas }} 
+      </div>
+      <div class="column" style="flex: 1; padding-left: 1500px;"></div>
+    </div>
+    <h4>Bio</h4>
+    {{form.bio }}
+    <div>
+      <button type="submit">Edit</button>
+    </div>
+</form>
+</body>
+</html>
+

@@ -22,3 +22,14 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['goals', 'problem_areas', 'bio']
+
+
+class UserProfileEditForm(forms.ModelForm):
+    goals = forms.ModelMultipleChoiceField(queryset=Tag.objects.all().distinct(), widget=forms.CheckboxSelectMultiple, required=False)
+    problem_areas = forms.ModelMultipleChoiceField(queryset=Tag.objects.all().distinct(), widget=forms.CheckboxSelectMultiple, required=False)
+
+    class Meta:
+        model = UserProfile
+        fields = ['goals', 'problem_areas', 'bio']   
+        
+            
