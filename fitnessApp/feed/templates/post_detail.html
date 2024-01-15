@@ -1,0 +1,24 @@
+<!-- post_detail.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }}</title>
+</head>
+<body>
+
+    <h1>{{ post.title }}</h1>
+
+    <p>Posted on {{ post.created_at }}</p>
+
+    <div>
+        {{ post.text}}
+    </div>
+
+    <!-- Add more details as needed based on your Post model fields -->
+
+</body>
+</html>

@@ -90,11 +90,28 @@ def profile_edit(request, profile_id):
     if request.method == 'POST':
         form = UserProfileEditForm(request.POST, instance=profile)
         if form.is_valid():
-            # Override cleaned_data for tags
-            form.cleaned_data['goals'] = [tag.id for tag in form.cleaned_data['goals']]
-            form.cleaned_data['problem_areas'] = [tag.id for tag in form.cleaned_data['problem_areas']]
 
-            form.save()
+            # profile = form.save()
+
+            # # Clear existing goals and problem areas
+            # profile.goals.clear()
+            # profile.problem_areas.clear()
+           
+            goals = form.cleaned_data['goals']
+            print(goals)
+            for goal in goals:
+                tag = Tag.objects.get(name=goal)
+                goal_obj = Goal.objects.create(user=profile.user, tag_id=tag.id)
+                profile.goals.add(goal_obj)
+
+            problem_areas = form.cleaned_data['problem_areas']
+            print(problem_areas)
+            for problem_area in problem_areas:
+                tag = Tag.objects.get(name=problem_area)
+                problem_obj = ProblemArea.objects.create(user=profile.user, tag_id=tag.id)
+                profile.problem_areas.add(problem_obj)
+
+            # form.save()
             return redirect('user_detail', profile_id=profile.id)
 
     else:

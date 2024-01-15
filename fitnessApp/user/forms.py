@@ -31,5 +31,16 @@ class UserProfileEditForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['goals', 'problem_areas', 'bio']   
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileEditForm, self).__init__(*args, **kwargs)
         
+        if self.instance:
+            # Get the IDs of selected goals and problem areas
+            selected_goals = self.instance.goals.values_list('id', flat=True)
+            selected_problem_areas = self.instance.problem_areas.values_list('id', flat=True)
+
+            # Set the initial values for the form fields
+            self.fields['goals'].initial = selected_goals
+            self.fields['problem_areas'].initial = selected_problem_areas  
             

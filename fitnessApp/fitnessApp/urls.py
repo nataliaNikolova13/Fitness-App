@@ -26,5 +26,7 @@ urlpatterns = [
     path('exercise/', include('exercise.urls')),
     path('user/', include('user.urls')),
     path('workouts/', include('workout.urls'), name='workouts'),
+    path('posts/', include('feed.urls')),
     path('', homePage, name='homePage')
 ]
+ 
