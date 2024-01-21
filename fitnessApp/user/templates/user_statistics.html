@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Statistics</title>
+</head>
+<body>
+    <h1>{{name}} Statistics</h1>
+    
+    <p>{{name}}'s Difficulty Level: {{ difficulty_points }}</p>
+
+    <h2>Your completed exercises</h2>
+    <ul>
+        {% for tag_count in user_tag_counts %}
+            <li>{{ tag_count.tag }}: {{ tag_count.count }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Post
+from .models import Post, Likes
 from .forms import PostForm
+from django.http import JsonResponse, HttpResponseForbidden
 
 # Create your views here.
 def list_all_posts(request):
@@ -17,7 +18,8 @@ def detail_post(request, post_id):
 def post_of_user(request, username):
     user = get_object_or_404(User, username=username)
     posts = Post.objects.filter(user=user)
-    return render(request, 'user_posts.html', {'posts': posts})
+    likes = post.likes_set.all()
+    return render(request, 'user_posts.html', {'posts': posts, 'likes': likes})
 
 @login_required
 def create_post(request):
@@ -32,3 +34,23 @@ def create_post(request):
         form = PostForm()
 
     return render(request, 'create_post.html', {'form': form})
+
+
+# def like_post(request, post_id):
+#     post = get_object_or_404(Post, id=post_id)
+#     like, created = Likes.objects.get_or_create(user=request.user, post=post)
+#     if created:
+#         post.likes_set.create(user=request.user)
+#     likes_count = post.likes_set.count()
+#     return JsonResponse({'likes_count': likes_count})
+
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    user = request.user
+
+    if Likes.objects.filter(user=user, post=post).exists():
+        return HttpResponseForbidden("You have already liked this post.")
+
+    post.likes_set.create(user=user)
+
+    return redirect(detail_post, post_id=post_id)

@@ -1,4 +1,3 @@
-<!-- post_detail.html -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +17,15 @@
         {{ post.text}}
     </div>
 
-    <!-- Add more details as needed based on your Post model fields -->
+    <div style="padding-top:15px">
+    <form method="post" action="{% url 'like_post' post.id %}">
+        {% csrf_token %}
+        <button type="submit">Like</button>
+    </form>
+    </div>
+
+    <p>Likes: {{ post.likes_set.count }}</p>
+
 
 </body>
 </html>

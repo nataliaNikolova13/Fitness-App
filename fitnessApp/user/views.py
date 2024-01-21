@@ -1,14 +1,16 @@
 # from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.urls import reverse
 from .models import UserProfile, Goal, ProblemArea
 from .forms import RegistrationForm, UserCreationForm, UserProfileForm, UserProfileEditForm
-from exercise.models import Tag
+from exercise.models import Tag, UserTagCount
 from workout.utils import create_legs_workout_function, create_arms_workout_function, create_cardio_workout_function, create_core_workout_function, create_custom_workout_function
 
 # Create your views here.
 from .models import UserProfile
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .decorators import guest_required, superuser_required, user_owner_required, user_owner_or_superuser_required
 
@@ -91,12 +93,6 @@ def profile_edit(request, profile_id):
         form = UserProfileEditForm(request.POST, instance=profile)
         if form.is_valid():
 
-            # profile = form.save()
-
-            # # Clear existing goals and problem areas
-            # profile.goals.clear()
-            # profile.problem_areas.clear()
-           
             goals = form.cleaned_data['goals']
             print(goals)
             for goal in goals:
@@ -111,10 +107,40 @@ def profile_edit(request, profile_id):
                 problem_obj = ProblemArea.objects.create(user=profile.user, tag_id=tag.id)
                 profile.problem_areas.add(problem_obj)
 
-            # form.save()
             return redirect('user_detail', profile_id=profile.id)
 
     else:
         form = UserProfileEditForm(instance=profile)
 
     return render(request, 'profile_edit.html', {'profile': profile, 'form': form})
+
+
+@user_owner_or_superuser_required
+def user_statistics(request, profile_id):
+    user_profile = get_object_or_404(UserProfile, id=profile_id)
+    # user = get_object_or_404(User, id=profile_id)
+    points_user = user_profile.points
+    print(points_user)
+
+    difficulty_levels = [
+        (0, 'EASY'),
+        (50, 'MEDIUM'),
+        (100, 'HARD'),
+        (200, 'PRO')
+    ]
+
+    user_level = None
+    for points, level in difficulty_levels:
+        if points_user >= points:
+            difficulty_points = points
+            user_level = level
+        else:
+            break
+
+    user_tag_counts = UserTagCount.objects.filter(user = user_profile.user).order_by('-count') 
+
+    print(user_tag_counts.values_list('tag', flat=True))
+
+    context = {'name':user_profile.user.username, 'difficulty_points': user_level, 'user_tag_counts': user_tag_counts}
+    
+    return render(request, 'user_statistics.html', context)
