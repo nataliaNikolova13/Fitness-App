@@ -18,7 +18,7 @@ def detail_post(request, post_id):
 def post_of_user(request, username):
     user = get_object_or_404(User, username=username)
     posts = Post.objects.filter(user=user)
-    likes = post.likes_set.all()
+    likes = Likes.objects.filter(user=user)
     return render(request, 'user_posts.html', {'posts': posts, 'likes': likes})
 
 @login_required
@@ -35,14 +35,6 @@ def create_post(request):
 
     return render(request, 'create_post.html', {'form': form})
 
-
-# def like_post(request, post_id):
-#     post = get_object_or_404(Post, id=post_id)
-#     like, created = Likes.objects.get_or_create(user=request.user, post=post)
-#     if created:
-#         post.likes_set.create(user=request.user)
-#     likes_count = post.likes_set.count()
-#     return JsonResponse({'likes_count': likes_count})
 
 def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
