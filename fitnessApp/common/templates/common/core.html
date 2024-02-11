@@ -31,7 +31,7 @@
     <div class="container">
       <div class="navbar-brand">
         <a class="navbar-item" href="../">
-          <img src="../images/bulma.png" alt="Logo">
+          <!-- <img src="../images/bulma.png" alt="Logo"> -->
         </a>
         <span class="navbar-burger burger" data-target="navbarMenu">
           <span></span>
@@ -41,22 +41,24 @@
       </div>
       <div id="navbarMenu" class="navbar-menu">
         <div class="navbar-end">
-          <div class=" navbar-item">
-            <div class="control has-icons-left">
-              <input class="input is-rounded" type="email" placeholder="Search">
-              <span class="icon is-left">
-                <i class="fa fa-search"></i>
-              </span>
-            </div>
-          </div>
+         
           <a class="navbar-item is-active is-size-5 has-text-weight-semibold">
             Home
           </a>
-          <a class="navbar-item is-size-5 has-text-weight-semibold">
-            Examples
+          <a class="navbar-item is-size-5 has-text-weight-semibold" href="{% url 'user_login' %}">
+            Login
           </a>
-          <a class="navbar-item is-size-5 has-text-weight-semibold">
-            Features
+          <a class="navbar-item is-size-5 has-text-weight-semibold" href="{% url 'registration_view' %}">
+            Registration
+          </a>
+          <a class="navbar-item is-size-5 has-text-weight-semibold" href="{% url 'user_logout' %}" >
+            Logout
+          </a>
+          <a class="navbar-item is-size-5 has-text-weight-semibold" href="{% url 'workouts:user_workouts' %}">
+            Workouts
+          </a>
+          <a class="navbar-item is-size-5 has-text-weight-semibold" href="{% url 'list_all_posts' %}">
+            Posts
           </a>
         </div>
       </div>
@@ -71,12 +73,12 @@
         <div class="columns">
           <div class="column is-8 is-offset-2">
             <figure class="image is-16by9">
-              <img src="../images/first-post.png" alt="">
+              <img src="https://www.nourishmovelove.com/wp-content/uploads/2023/12/BeginnerWorkoutPlanHero.jpg" alt="">
             </figure>
           </div>
         </div>
 
-        <section class="section">
+        <!-- <section class="section">
           <div class="columns">
             <div class="column is-8 is-offset-2">
               <div class="content is-medium">
@@ -104,22 +106,12 @@
               </div>
             </div>
           </div>
-        </section>
+        </section> -->
 
 
       </div>
     </div>
   </section>
-
-  <footer class="footer">
-    <div class="content has-text-centered">
-      <p>
-        <strong>Bulma - Blog theme</strong> by <a href="https://gonzalojs.com">Gonzalo Gutierrez</a>. Based on the <a
-          href="http://jigsaw-blog-staging.tighten.co/">jigsaw-blog</a>. The source code is licensed
-        <a href="http://opensource.org/licenses/mit-license.php">MIT</a>
-      </p>
-    </div>
-  </footer>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
