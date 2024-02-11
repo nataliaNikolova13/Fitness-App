@@ -45,7 +45,23 @@ Fitness App Endpoints:
  - POST /posts/like-post/<int:post_id>/: Like a post.
 
 ### Common Endpoints:
- - GET /: Homepage.
+ - GET /: Homepage. 
+
+## User Roles
+### User
+ - Can view and complete a workout
+ - View an exercise
+ - Create, view and like posts
+ - View personal profile and statistics
+### Guest
+- View exercise
+- View posts
+### SuperUser
+ - Can view and complete a workout
+ - Can view and create exercise
+ - Can create tags
+ - Can view all users, all user pages and all user statistics
+ - View all posts, browse by user, create post and like
 
 # Django Project Starter
 ## Prerequisites
