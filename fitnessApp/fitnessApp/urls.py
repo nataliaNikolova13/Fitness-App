@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from common.views import homePage
+from common.views import homePage, custom_404
 from exercise.views import exercise_list
 from user.views import login
 
@@ -27,6 +27,8 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('workouts/', include('workout.urls'), name='workouts'),
     path('posts/', include('feed.urls')),
-    path('', homePage, name='homePage')
+    path('', homePage, name='homePage'),
 ]
+
+handler404 = custom_404
  

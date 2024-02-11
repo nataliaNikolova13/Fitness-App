@@ -22,7 +22,7 @@ def superuser_required(view_func):
             return view_func(request, *args, **kwargs)
         else:
             messages.error(request, "Permission Denied. You must be a superuser.")
-            return redirect('/user/login')  
+            return redirect('/')  
 
     return _wrapped_view
 

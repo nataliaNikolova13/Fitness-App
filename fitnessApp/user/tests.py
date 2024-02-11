@@ -1,10 +1,12 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import UserProfile, Goal, ProblemArea
 from exercise.models import Tag
 from .forms import RegistrationForm, UserProfileForm
 from .decorators import guest_required
+from django.contrib import messages
+from functools import wraps
 
 # Create your tests here.
 
@@ -43,10 +45,39 @@ class TestUserViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'register.html')
 
-    # def test_registration_view_post_success(self):
-    #     response = self.client.post(
-    #         reverse('registration_view'),
-    #         {'username': 'newuser', 'password1': 'newpassword123', 'password2': 'newpassword123', 'email': 'newuserrr@gamil.com'},
-    #     )
-    #     self.assertEqual(response.status_code, 302)  
-    #     # self.assertRedirects(response, reverse('user_login')) 
+
+
+class GuestRequiredDecoratorTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+
+    def test_guest_required_redirects_authenticated_user(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.get(reverse('user_login'))
+        self.assertRedirects(response, '/')
+
+    def test_guest_required_allows_guest_user(self):
+        response = self.client.get(reverse('user_login'))
+        self.assertEqual(response.status_code, 200)
+
+
+class SuperuserRequiredDecoratorTest(TestCase):
+    def setUp(self):
+        self.superuser = User.objects.create_user(username='admin', password='adminpass', is_superuser=True)
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.factory = RequestFactory()
+
+    def test_superuser_required_allows_superuser(self):
+        self.client.login(username='admin', password='adminpass')
+        response = self.client.get(reverse('user_list'))
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_superuser_required_denies_regular_user(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.get(reverse('user_list'))
+        self.assertRedirects(response, '/')
+
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEqual(len(messages_list), 1)
+        self.assertEqual(messages_list[0].message, "Permission Denied. You must be a superuser.")
