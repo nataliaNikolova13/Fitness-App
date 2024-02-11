@@ -2,7 +2,7 @@ from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import UserProfile, Goal, ProblemArea
-from exercise.models import Tag
+from exercise.models import Tag, UserTagCount
 from .forms import RegistrationForm, UserProfileForm
 from .decorators import guest_required
 from django.contrib import messages

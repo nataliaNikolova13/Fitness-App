@@ -37,23 +37,18 @@ def updateUserInfo(workout):
         category = 'Cardio'    
     elif categoryNum == 0:
         category = 'Custom'   
-        # print(2)
 
     if category == 'Custom':
         new_exercises = getExercisesCustom(workout.user)
-        # print(new_exercises)
     else:
         new_exercises = getExercises(workout.user, category)
-        # print(1)
 
 
     if new_exercises is not None:
-        # print(3)
         workout.exercises.clear()
         workout.exercises.add(*new_exercises) 
         workout.completed = False
         workout.save()    
-        # print(workout.completed)   
 
   
     
