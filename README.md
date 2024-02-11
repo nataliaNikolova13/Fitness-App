@@ -14,39 +14,38 @@ When logged in go to this url to access your custom workout routines.
 ## EndPoints
 Fitness App Endpoints:
 
- - Admin Interface:
+### Admin Interface:
+ - GET /admin/: Django Admin Interface.
 
-GET /admin/: Django Admin Interface.
+### Exercise Module:
+ - GET /exercise/: List of exercises.
+ - GET /exercise/<int:exercise_id>/: Exercise detail.
+ - POST /exercise/create/exercise/: Create a new exercise.
+ - POST /exercise/create/tag/: Create a new exercise tag.
 
- - Exercise Module:
-GET /exercise/: List of exercises.
-GET /exercise/<int:exercise_id>/: Exercise detail.
-POST /exercise/create/exercise/: Create a new exercise.
-POST /exercise/create/tag/: Create a new exercise tag.
+### User Module:
+ - POST /user/login/: User login.
+ - POST /user/logout/: User logout.
+ - POST /user/register/: User registration.
+ - GET /user/<int:profile_id>/: User profile detail.
+ - POST /user/edit/<int:profile_id>/: Edit user profile.
+ - GET /user/statistics/<int:profile_id>/: User statistics.
+ - GET /user/: List of users
 
- - User Module:
-POST /user/login/: User login.
-POST /user/logout/: User logout.
-POST /user/register/: User registration.
-GET /user/<int:profile_id>/: User profile detail.
-POST /user/edit/<int:profile_id>/: Edit user profile.
-GET /user/statistics/<int:profile_id>/: User statistics.
-GET /user/: List of users
+### Workout Module:
+ - GET /workouts/: List of user workouts.
+ - GET /workouts/workout/<int:workout_id>/: Workout detail.
+ - POST /workouts/workout/<int:workout_id>/mark_completed/: Mark workout as completed.
 
- - Workout Module:
-GET /workouts/: List of user workouts.
-GET /workouts/workout/<int:workout_id>/: Workout detail.
-POST /workouts/workout/<int:workout_id>/mark_completed/: Mark workout as completed.
+### Post Module:
+ - GET /posts/: List of all posts.
+ - POST /posts/create/: Create a new post.
+ - GET /posts/<int:post_id>/: Post detail.
+ - GET /posts/<str:username>/: Posts of a specific user.
+ - POST /posts/like-post/<int:post_id>/: Like a post.
 
- - Post Module:
-GET /posts/: List of all posts.
-POST /posts/create/: Create a new post.
-GET /posts/<int:post_id>/: Post detail.
-GET /posts/<str:username>/: Posts of a specific user.
-POST /posts/like-post/<int:post_id>/: Like a post.
-
- - Common Endpoints:
-GET /: Homepage.
+### Common Endpoints:
+ - GET /: Homepage.
 
 # Django Project Starter
 ## Prerequisites
